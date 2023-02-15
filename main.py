@@ -6,8 +6,8 @@ if __name__ == '__main__':
 
     z_values = []
     states_model_values = []
-    states_teory_values = []
-    with open("states.txt", "r") as f:
+    states_theory_values = []
+    with open("states3.txt", "r") as f:
         lines = f.readlines()
         size = len(lines)
         for i in range(size):
@@ -16,7 +16,7 @@ if __name__ == '__main__':
             matrix_inp.append(row)
     f.close()
     matrix = np.array(matrix_inp)
-    transitions = [[0 for i in range(size)] for j in range(size)]
+    transitions = [0 for i in range(size)]
     z = int(input('Введите начальное состояние: '))
     stoch_state = np.zeros(size)
     stoch_state[z] = 1
@@ -27,22 +27,25 @@ if __name__ == '__main__':
         border = 0.0
         for j in range(size):
             if rand_n <= (border + matrix[z][j]):
-                transitions[z][j] += 1
+                transitions[j] += 1
                 probabilities = []
-                s = sum(transitions[z])
+                s = sum(transitions)
                 for k in range(size):
-                    p = transitions[z][k] / s
+                    p = transitions[k] / s
                     probabilities.append(p)
                 states_model_values.append(probabilities)
                 z = j
                 break
             border += matrix[z][j]
         stoch_state = np.dot(stoch_state, matrix)
-        states_teory_values.append(stoch_state)
+        states_theory_values.append(stoch_state)
 
-    with open("results.txt", "w") as f2:
+    with open("results3.txt", "w") as f2:
         for i in range(steps_number):
-            f2.write(str(i) + "\t" + str(z_values[i]) + "\t" + str(states_model_values[i]) + "\t" + str(states_teory_values[i]) + "\n")
+            states_model_formatted = ['%.3f' % elem for elem in states_model_values[i]]
+            # states_model_formatted = np.around(np.array(states_model_values[i]), 3)
+            states_theorie_formatted = np.around(states_theory_values[i], 3)
+            f2.write(str(i) + "\t" + str(z_values[i]) + "\t" + str(states_model_formatted) + "\t" + str(states_theorie_formatted) + "\n")
     f2.close()
 
 
